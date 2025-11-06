@@ -6,6 +6,27 @@ import autopy
 import time
 import pyautogui
 
+# Cargar imagen de instrucciones
+img = cv2.imread("Instrucciones Videohand control.png")
+#Para que no salga tan grande 
+img = cv2.resize(img, (400, 500))  # (ancho, alto)
+
+# Mostrar ventana de inicio
+cv2.imshow("Pantalla Inicial - Presiona ESPACIO para iniciar", img)
+
+while True:
+    key = cv2.waitKey(1) & 0xFF
+    # Si presionan ESPACIO (código ASCII 32)
+    if key == 32:
+        print("Iniciando sistema...")
+        cv2.destroyWindow("Pantalla Inicial - Presiona ESPACIO para iniciar")
+        break
+    # Opción para salir con ESC
+    if key == 27:
+        print("Programa cerrado")
+        cv2.destroyAllWindows()
+        exit()
+
 #---------------------------------Declaracion de variables---------------------------------------
 anchocam, altocam = 640, 480
 cuadro = 60
@@ -250,4 +271,5 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
+
 print("\n¡Sistema cerrado correctamente!")
