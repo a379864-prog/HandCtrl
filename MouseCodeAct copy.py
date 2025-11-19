@@ -42,10 +42,10 @@ while True:
     
     if key == 27:  # ESC
         print("Sistema médico cerrado")
-        #cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
         exit()
 
-# ... EL RESTO DE TU CÓDIGO ORIGINAL ...
+
 
 #---------------------------------Declaracion de variables---------------------------------------
 anchocam, altocam = 640, 480
