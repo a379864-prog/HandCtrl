@@ -1,15 +1,7 @@
-# -*- coding: utf-8 -*-
-"""
-
-@author: pauli
-
-Codigo Seguimiendo de manos
-"""
 
 import math
 import cv2
 import mediapipe as mp
-
 
 class detectormanos():
     def __init__(self, mode=False, maxManos=2, Confdeteccion=0.5, Confsegui=0.5):
@@ -68,13 +60,34 @@ class detectormanos():
         if not self.lista:
             return dedos
 
-        # Pulgar
-        if self.lista[self.tip[0]][1] > self.lista[self.tip[0] - 1][1]:
-            dedos.append(1)
-        else:
-            dedos.append(0)
+        # --- LÓGICA AMBIDIESTRA ---
+        # Detectamos si es mano Derecha o Izquierda para ajustar el pulgar
+        etiqueta = "Right" # Default
+        try:
+            if self.resultados.multi_handedness:
+                etiqueta = self.resultados.multi_handedness[0].classification[0].label
+        except:
+            pass
 
-        # Otros dedos
+        # Pulgar (Eje X)
+        # Para mano DERECHA: Pulgar abierto si Tip < Nudillo (está a la izquierda)
+        # Para mano IZQUIERDA: Pulgar abierto si Tip > Nudillo (está a la derecha)
+        tip_x = self.lista[self.tip[0]][1]
+        nudillo_x = self.lista[self.tip[0] - 1][1]
+
+        if etiqueta == "Right":
+            if tip_x < nudillo_x:
+                dedos.append(1)
+            else:
+                dedos.append(0)
+        else: # Left
+            if tip_x > nudillo_x:
+                dedos.append(1)
+            else:
+                dedos.append(0)
+
+        # Otros 4 dedos (Eje Y - Vertical)
+        # Esto no cambia entre zurdos y diestros
         for id in range(1, 5):
             if self.lista[self.tip[id]][2] < self.lista[self.tip[id] - 2][2]:
                 dedos.append(1)
